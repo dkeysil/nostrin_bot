@@ -1,0 +1,59 @@
+run:
+  concurrency: 4
+  timeout: 5m
+  tests: false
+
+output:
+  format: colored-line-number
+   
+issues:
+  exclude-use-default: false
+
+linters:
+    disable-all: true
+    enable:
+    - bodyclose
+    - dogsled
+    - dupl
+    - errcheck
+    - funlen
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - godot
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - nolintlint
+    - rowserrcheck
+    - exportloopref
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+linters-settings:
+  stylecheck:
+    checks: ["all", "-ST1000", "-ST1003"]
+  
+  errcheck:
+    exclude-functions:
+     - (io.Closer).Close
+     - (*io.PipeWriter).Close
+     - (*os.File).Close
+  
+  revive:
+    rules:
+    - name: package-comments
+      disabled: true
