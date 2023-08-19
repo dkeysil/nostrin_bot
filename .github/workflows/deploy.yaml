@@ -50,7 +50,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_SECRET }}
-          envs: CONFIG_YAML
+          envs: CONFIG_YAML, SSH_USERNAME
           script: |
             mkdir nostrin_bot
             rm nostrin_bot/config.yaml
