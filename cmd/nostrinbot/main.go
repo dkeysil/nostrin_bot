@@ -25,6 +25,12 @@ func main() {
 	zap.ReplaceGlobals(log)
 
 	pool := nostr.NewSimplePool(context.Background())
+	for _, url := range cfg.Nostr.RelayURLs {
+		_, err := pool.EnsureRelay(url)
+		if err != nil {
+			log.Warn("failed to add relay", zap.Error(err), zap.String("url", url))
+		}
+	}
 
 	bot, err := tgbotapi.NewBotAPI(cfg.TelegramBot.Token)
 	if err != nil {
@@ -35,7 +41,7 @@ func main() {
 
 	log.Info("authorized on account", zap.String("bot_name", bot.Self.UserName))
 
-	h := handlers.NewSendNoteInlineQueryHandler(pool, cfg.Nostr.RelayURLs)
+	h := handlers.NewSendNoteInlineQueryHandler(pool)
 
 	router := telegram.NewRouter(bot)
 	router.RegisterInlineQueryHandler(&telegram.InlineQueryHandler{

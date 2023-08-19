@@ -24,14 +24,12 @@ var (
 )
 
 type SendNoteInlineQueryHandler struct {
-	pool      *nostr.SimplePool
-	relayURLs []string
+	pool *nostr.SimplePool
 }
 
-func NewSendNoteInlineQueryHandler(pool *nostr.SimplePool, relayURLs []string) *SendNoteInlineQueryHandler {
+func NewSendNoteInlineQueryHandler(pool *nostr.SimplePool) *SendNoteInlineQueryHandler {
 	return &SendNoteInlineQueryHandler{
-		pool:      pool,
-		relayURLs: relayURLs,
+		pool: pool,
 	}
 }
 
@@ -54,7 +52,7 @@ func (h *SendNoteInlineQueryHandler) HandleInlineQuery(bot *tgbotapi.BotAPI, que
 		return
 	}
 
-	if _, err := bot.Send(prepareInlineAnswer(event.ID, title, message)); err != nil {
+	if _, err := bot.Send(prepareInlineAnswer(query.ID, event.ID, title, message)); err != nil {
 		zap.L().Error("failed to answer inline query", zap.Error(err))
 	}
 }
@@ -167,10 +165,10 @@ func (h *SendNoteInlineQueryHandler) prepareMessage(
 	return title, buff.String(), nil
 }
 
-func prepareInlineAnswer(id, title, message string) tgbotapi.InlineConfig {
+func prepareInlineAnswer(inlineQueryID, eventID, title, message string) tgbotapi.InlineConfig {
 	result := tgbotapi.InlineQueryResultArticle{
 		Type:  "article",
-		ID:    id,
+		ID:    eventID,
 		Title: title,
 		InputMessageContent: tgbotapi.InputTextMessageContent{
 			Text:                  message,
@@ -180,7 +178,7 @@ func prepareInlineAnswer(id, title, message string) tgbotapi.InlineConfig {
 	}
 
 	return tgbotapi.InlineConfig{
-		InlineQueryID: id,
+		InlineQueryID: inlineQueryID,
 		Results:       []interface{}{result},
 		CacheTime:     cacheTime,
 	}
